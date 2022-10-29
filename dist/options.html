@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/regular.min.css">
+    <link rel="stylesheet" href="css/solid.min.css">
+    <link rel="stylesheet" href="css/brands.min.css">
+    <link rel="stylesheet" href="css/options.css">
+</head>
+
+<body>
+    <div id="scrollable">
+        <div id="main">
+            <details id="youtube" open>
+                <summary>
+                    <h3><i class="fab fa-youtube fa-lg"></i>YouTube</h3>
+                </summary>
+                <h4>to Genius</h4>
+                <div class="options_container">
+                    <div>
+                        <label>
+                            <input type="checkbox" id="openMatchGenius" disabled>
+                            Directly open genius song page when title matches exactly.
+                        </label>
+                    </div>
+                </div>
+                <h4>to Spotify</h4>
+                <div class="options_container">
+                    <label>When title matches exactly:</label>
+                    <div class="option_container">
+                        <input type="radio" name="yt_spotify_match" value="nothing" checked>
+                        <label>Do nothing.</label>
+                    </div>
+
+                    <div class="option_container">
+                        <input type="radio" name="yt_spotify_match" value="open" disabled>
+                        <label>Open card.</label>
+                    </div>
+
+                    <div class="option_container">
+                        <input type="radio" name="yt_spotify_match" value="play" disabled>
+                        <label>Play song.</label>
+                    </div>
+                </div>
+                <div class="options_container">
+                    <div class="format_rules_options_container">
+                        <div class=format_rules_title>
+                            <label>Title format rules:</label>
+                            <div class="format_title_header_buttons">
+                                <div class="circle_button_container">
+                                    <button id="add_rule" class="fas fa-plus header_button" title="Add rule"></button>
+                                </div>
+                                <div class="circle_button_container">
+                                    <button id="restore_default" class="fas fa-undo header_button"
+                                        title="Restore defaults"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="format_rules_list_container">
+                            <ul id="title_format_list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <details id="spotify">
+                <summary>
+                    <h3><i class="fab fa-spotify fa-lg"></i>Spotify</h3>
+                </summary>
+            </details>
+
+            <details id="genius">
+                <summary>
+                    <h3><img src="img/genius_logo_transparent.svg">Genius</h3>
+                </summary>
+            </details>
+        </div>
+        <footer>
+            <div id="footer">
+                <button id="get_sync" class="btnSync"><i class="fas fa-globe"></i>Get global settings</button>
+                <button id="set_sync" class="btnSync"><i class="fas fa-upload"></i>Upload to all devices</button>
+            </div>
+        </footer>
+        <script src="js/options.js"></script>
+</body>
+
+</html>

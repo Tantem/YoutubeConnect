@@ -1,0 +1,224 @@
+#footer {
+    align-items: center;
+    background-color: #212121;
+    display: flex;
+    flex: 1 1 0px;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+#title_format_list {
+    margin: 0px;
+}
+
+#scrollable {
+    height: 500px;
+    overflow: auto;
+    padding-bottom: 60px;
+    /* footer space */
+}
+
+#main {
+    margin: 25px;
+}
+
+details {
+    margin: 20px 0;
+}
+
+details summary {
+    cursor: pointer;
+}
+
+details summary>* {
+    display: inline;
+}
+
+details[open] summary~* {
+    animation: sweep .5s ease-in-out;
+}
+
+html {
+    overflow: hidden;
+    min-height: 500px;
+    min-width: 400px;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+}
+
+li {
+    margin: 5px 0px;
+}
+
+.btnSync:focus,
+.btnSync:hover {
+    background-color: #991d1d;
+    color: #ffffff;
+}
+
+.btnSync {
+    background-color: #c4302b;
+    border-style: none;
+    border-radius: 100px;
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: center;
+    line-height: 20px;
+    min-height: 40px;
+    margin: 10px 0px;
+    overflow: hidden;
+    text-align: center;
+    transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+    vertical-align: middle;
+    width: 195px;
+}
+
+.fa-youtube {
+    color: #c4302b;
+}
+
+.fa-spotify {
+    color: #1DB954;
+}
+
+h3 img {
+    margin-left: 5px;
+    margin-right: 5px;
+    vertical-align: sub;
+    width: 24px;
+    height: 24px;
+}
+
+h3 i,
+.btnSync i {
+    width: 22px;
+    margin: 5px;
+}
+
+.circle_button_container {
+    margin: 0px 10px;
+}
+
+input {
+    border-style: none;
+    border-radius: 6px;
+    background-color: lightgray;
+    min-width: 6px;
+    padding: 0 5px;
+}
+
+.format_rules_options_container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "format_rules_title format_rules_title"
+        "format_rules_list_container format_rules_list_container";
+}
+
+.format_rules_title {
+    display: grid;
+    grid-template-columns: 1.5fr 0.5fr;
+    grid-template-rows: 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        ". format_title_header_buttons";
+    grid-area: format_rules_title;
+}
+
+.format_title_header_buttons {
+    display: flex;
+    grid-area: format_title_header_buttons;
+}
+
+.format_rules_list_container {
+    grid-area: format_rules_list_container;
+}
+
+.listitem_container {
+    display: flex;
+}
+
+.listitem_container .hidden-item {
+    opacity: 0;
+    transition: opacity 0.25s linear;
+}
+
+.listitem_container:hover .hidden-item,
+.listitem_container:focus-within .hidden-item {
+    opacity: 1;
+}
+
+.option_group_item {
+    margin-left: 25px;
+}
+
+.option_container {
+    margin-left: 25px;
+}
+
+.options_container {
+    margin-top: 10px;
+}
+
+.header_button,
+.remove_rule_button {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border-style: none;
+    background-color: transparent;
+    display: inline-block;
+    padding: 0px;
+    transition: all 0.2s ease;
+}
+
+.header_button:hover,
+.remove_rule_button:hover {
+    animation: circle-anim 0.3s ease forwards;
+    background-color: #212121;
+    color: #ffffff;
+    transition: all 0.4s ease;
+}
+
+.target::placeholder {
+    color: black;
+}
+
+.target:placeholder-shown {
+    background-color: #c77775;
+}
+
+@keyframes circle-anim {
+    0% {}
+
+    90% {
+        padding: 0.35em;
+        margin: -0.35em;
+    }
+
+    100% {
+        padding: 0.25em;
+        margin: -0.25em;
+    }
+}
+
+@keyframes sweep {
+    0% {
+        opacity: 0;
+        transform: translateX(-10px)
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0)
+    }
+}
