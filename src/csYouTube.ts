@@ -128,7 +128,7 @@ namespace YouTube {
 
     function addCustomButtonsDropdown(contextMenuEntry: Element): void {
 
-        createItem("itemGenius", "Find on Genius", true, [spotifyLogo], function btSpotify_OnClick() {
+        createItem("itemGenius", "Find on Genius", true, geniusLogo, function btSpotify_OnClick() {
             getTitle().then(title =>
                 chrome.runtime.sendMessage(
                     {
@@ -138,7 +138,7 @@ namespace YouTube {
                 ));
         });
 
-        createItem("itemSpotify", "Find on Spotify", false, geniusLogo, function btGenius_OnClick() {
+        createItem("itemSpotify", "Find on Spotify", false, [spotifyLogo], function btGenius_OnClick() {
             getTitle().then(title =>
                 chrome.runtime.sendMessage(
                     {
@@ -158,11 +158,11 @@ namespace YouTube {
             renderer.setAttribute("role", "menuitem");
             renderer.setAttribute("tabindex", "-1");
             renderer.setAttribute("aria-selected", "false");
-            if(separator) renderer.setAttribute("has-separator", "");
+            if (separator) renderer.setAttribute("has-separator", "");
             renderer.addEventListener("click", onClick);
 
             contextMenuEntry.insertAdjacentElement("afterend", renderer);
-            
+
             var icon = renderer.getElementsByTagName("yt-icon")[0];
 
             var svg = document.createElementNS('http://www.w3.org/2000/svg', "svg");
