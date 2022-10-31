@@ -27,7 +27,7 @@ namespace YouTube {
     function startObserver(): void {
         var dropdownObserver = new MutationObserver(function () {
             if (!document.querySelector('#itemSpotify')) {
-                var contextMenuEntry = document.querySelector('#items > ytd-menu-service-item-renderer:nth-child(5)');
+                var contextMenuEntry = document.querySelector('#items > ytd-menu-service-item-renderer:last-child');
                 if (contextMenuEntry) addCustomButtonsDropdown(contextMenuEntry);
             }
         });
@@ -128,7 +128,9 @@ namespace YouTube {
 
     function addCustomButtonsDropdown(contextMenuEntry: Element): void {
 
-        createItem("itemGenius", "Find on Genius", true, geniusLogo, function btSpotify_OnClick() {
+        contextMenuEntry.setAttribute("has-separator", "");
+
+        createItem("itemGenius", "Find on Genius", geniusLogo, function btSpotify_OnClick() {
             getTitle().then(title =>
                 chrome.runtime.sendMessage(
                     {
@@ -138,7 +140,7 @@ namespace YouTube {
                 ));
         });
 
-        createItem("itemSpotify", "Find on Spotify", false, [spotifyLogo], function btGenius_OnClick() {
+        createItem("itemSpotify", "Find on Spotify", [spotifyLogo], function btGenius_OnClick() {
             getTitle().then(title =>
                 chrome.runtime.sendMessage(
                     {
@@ -148,7 +150,7 @@ namespace YouTube {
                 ));
         });
 
-        function createItem(id: string, text: string, separator: boolean, pathStrings: string[], onClick: (this: HTMLElement, ev: MouseEvent) => any) {
+        function createItem(id: string, text: string, pathStrings: string[], onClick: (this: HTMLElement, ev: MouseEvent) => any) {
 
             var renderer = document.createElement("ytd-menu-service-item-renderer");
             renderer.id = id;
@@ -158,7 +160,6 @@ namespace YouTube {
             renderer.setAttribute("role", "menuitem");
             renderer.setAttribute("tabindex", "-1");
             renderer.setAttribute("aria-selected", "false");
-            if (separator) renderer.setAttribute("has-separator", "");
             renderer.addEventListener("click", onClick);
 
             contextMenuEntry.insertAdjacentElement("afterend", renderer);
