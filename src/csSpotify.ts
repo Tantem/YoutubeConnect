@@ -54,7 +54,7 @@ namespace Spotify {
     }
 
     function getTitle() {
-        var nowPlayingBar = document.querySelector('.Root__now-playing-bar')
+        var nowPlayingBar = document.querySelector('[data-testid="now-playing-bar"]');
         if (nowPlayingBar == null) return;
         var artist = querySelectorNoChildren(nowPlayingBar, 'a[href^="\\/artist\\/"], a[href^="\\/show\\/"]')?.innerText ?? "";
         var song = querySelectorNoChildren(nowPlayingBar, 'a[href^="\\/album\\/"], a[href^="\\/episode\\/"]')?.innerText ?? "";
