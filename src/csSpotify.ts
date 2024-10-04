@@ -1,9 +1,10 @@
 namespace Spotify {
+    console.log("YouTubeConnect loading...");
     window.addEventListener("load", startObserver);
 
     function startObserver(): void {
         var observer = new MutationObserver(function (mutations, me) {
-            var found = document.querySelector("header > div > button:nth-of-type(2)");
+            var found = document.querySelector("footer > div :last-child > div > button:first-of-type");
             if (found) {
                 addCustomButtons(found);
                 me.disconnect(); // stop observing
@@ -11,7 +12,7 @@ namespace Spotify {
             }
         });
 
-        // start observing
+        console.log("YouTubeConnect start observing...");
         observer.observe(document, {
             childList: true,
             subtree: true
@@ -19,20 +20,48 @@ namespace Spotify {
     }
 
     function addCustomButtons(found: Element): void {
+        console.log("YouTubeConnect found element", found);
+        
         var imgGenius = document.createElement('img');
-        imgGenius.src = chrome.runtime.getURL('img/genius_logo_green.png');
-        imgGenius.height = 32;
+        imgGenius.src = chrome.runtime.getURL('img/genius_logo_transparent.svg');
+        imgGenius.height = 24;
         imgGenius.width = imgGenius.height;
         imgGenius.style.cursor = "pointer";
 
+        var imgWrapperGenius = document.createElement('div');
+        imgWrapperGenius.style.width = '32px';
+        imgWrapperGenius.style.height = '32px';
+        imgWrapperGenius.style.borderRadius = '50%';
+        imgWrapperGenius.style.overflow = 'hidden';
+        imgWrapperGenius.style.backgroundColor = "#fff";
+        imgWrapperGenius.style.display = "inline-block";
+        imgWrapperGenius.style.display = "flex";
+        imgWrapperGenius.style.alignItems = "center";
+        imgWrapperGenius.style.justifyContent = "center";
+
+        imgWrapperGenius.appendChild(imgGenius);
+
         var imgYouTube = document.createElement('img');
-        imgYouTube.src = chrome.runtime.getURL('img/youtube_logo_green.png');
-        imgYouTube.height = 32;
+        imgYouTube.src = chrome.runtime.getURL('img/youtube_logo_transparent.svg');
+        imgYouTube.height = 24;
         imgYouTube.width = imgYouTube.height;
         imgYouTube.style.cursor = "pointer";
 
-        found.insertAdjacentElement('afterend', imgGenius);
-        found.insertAdjacentElement('afterend', imgYouTube);
+        var imgWrapperYouTube = document.createElement('div');
+        imgWrapperYouTube.style.width = '32px';
+        imgWrapperYouTube.style.height = '32px';
+        imgWrapperYouTube.style.borderRadius = '50%';
+        imgWrapperYouTube.style.overflow = 'hidden';
+        imgWrapperYouTube.style.backgroundColor = "#fff";
+        imgWrapperYouTube.style.display = "inline-block";
+        imgWrapperYouTube.style.display = "flex";
+        imgWrapperYouTube.style.alignItems = "center";
+        imgWrapperYouTube.style.justifyContent = "center";
+
+        imgWrapperYouTube.appendChild(imgYouTube);
+        
+        found.insertAdjacentElement('afterend', imgWrapperGenius);
+        found.insertAdjacentElement('afterend', imgWrapperYouTube);
 
         imgGenius.addEventListener('click', function () {
             chrome.runtime.sendMessage(
