@@ -1,4 +1,5 @@
 namespace YouTube {
+    console.log("YouTubeConnect loading...");
 
     const spotifyLogo = 'M 12 0.0390625 C 5.390625 0.0390625 0.0351562 5.394531 0.0351562 12.003906 C 0.0351562 18.609375 5.390625 23.964844 12 23.964844 C 18.605469 23.964844 23.960938 18.609375 23.960938 12.003906 C 23.960938 5.394531 18.605469 0.0390625 12 0.0390625 Z M 17.484375 17.292969 C 17.269531 17.644531 16.8125 17.757812 16.460938 17.539062 C 13.652344 15.824219 10.113281 15.4375 5.949219 16.386719 C 5.550781 16.480469 5.148438 16.226562 5.058594 15.828125 C 4.964844 15.425781 5.214844 15.023438 5.617188 14.933594 C 10.175781 13.890625 14.085938 14.339844 17.238281 16.269531 C 17.589844 16.484375 17.703125 16.941406 17.484375 17.292969 Z M 18.949219 14.035156 C 18.679688 14.476562 18.105469 14.613281 17.667969 14.34375 C 14.453125 12.367188 9.550781 11.792969 5.746094 12.949219 C 5.253906 13.097656 4.730469 12.820312 4.582031 12.328125 C 4.433594 11.835938 4.710938 11.3125 5.203125 11.164062 C 9.546875 9.847656 14.949219 10.484375 18.644531 12.753906 C 19.082031 13.023438 19.21875 13.597656 18.949219 14.035156 Z M 19.074219 10.644531 C 15.21875 8.355469 8.859375 8.144531 5.175781 9.261719 C 4.585938 9.441406 3.960938 9.105469 3.78125 8.515625 C 3.601562 7.921875 3.9375 7.300781 4.527344 7.121094 C 8.753906 5.835938 15.777344 6.085938 20.21875 8.71875 C 20.75 9.035156 20.925781 9.722656 20.609375 10.253906 C 20.292969 10.785156 19.605469 10.960938 19.078125 10.644531 Z M 19.074219 10.644531';
     const geniusLogo = [
@@ -13,11 +14,12 @@ namespace YouTube {
         if (menu) {
             addCustomButtonsVideo(menu);
         }
-    });
+    }, true);
     document.onmousedown = function (e) {
         if (e.target instanceof Element) {
-            var parent = e.target.parentElement;
-            if (parent != null && parent.id == "button" && parent.className == "style-scope yt-icon-button") {
+            var parent = e.target.closest('button');
+            if (parent && parent.id == "button" && parent.className == "style-scope yt-icon-button") {
+                console.log("YouTubeConnect click on video registered", lastContextMenuButton);
                 lastContextMenuButton = parent;
             }
         }
@@ -29,8 +31,10 @@ namespace YouTube {
             if (!document.querySelector('#itemSpotify')) {
                 var contextMenuEntry = document.querySelector('#items > ytd-menu-service-item-renderer:last-child');
                 if (contextMenuEntry) addCustomButtonsDropdown(contextMenuEntry);
+                // dropdownObserver.disconnect();
             }
         });
+        console.log("YouTubeConnect start observing...");
         dropdownObserver.observe(document, {
             childList: true,
             subtree: true
@@ -38,6 +42,7 @@ namespace YouTube {
     }
 
     function addCustomButtonsVideo(found: Element): void {
+        console.log("YouTubeConnect found element", found);
 
         if (document.getElementById('button-spotify')) return;
 
@@ -126,7 +131,9 @@ namespace YouTube {
         }
     }
 
+    (window as any).addCustomButtonsDropdown = addCustomButtonsDropdown;
     function addCustomButtonsDropdown(contextMenuEntry: Element): void {
+        console.log("YouTubeConnect found dropdown", contextMenuEntry);
 
         contextMenuEntry.setAttribute("has-separator", "");
 
@@ -151,30 +158,42 @@ namespace YouTube {
         });
 
         function createItem(id: string, text: string, pathStrings: string[], onClick: (this: HTMLElement, ev: MouseEvent) => any) {
+            console.log("YouTubeConnect adding item", id, text);
 
-            var renderer = document.createElement("ytd-menu-service-item-renderer");
+            const renderer = document.createElement('ytd-menu-service-item-renderer');
             renderer.id = id;
-            renderer.classList.add("style-scope", "ytd-menu-popup-renderer");
-            renderer.setAttribute("use-icons", "");
-            renderer.setAttribute("system-icons", "");
-            renderer.setAttribute("role", "menuitem");
-            renderer.setAttribute("tabindex", "-1");
-            renderer.setAttribute("aria-selected", "false");
+            renderer.setAttribute('class', 'style-scope ytd-menu-popup-renderer');
+            renderer.setAttribute('system-icons', '');
+            renderer.setAttribute('role', 'menuitem');
+            renderer.setAttribute('use-icons', '');
+            renderer.setAttribute('tabindex', '-1');
+            renderer.setAttribute('aria-selected', 'false');
             renderer.addEventListener("click", onClick);
 
-            contextMenuEntry.insertAdjacentElement("afterend", renderer);
+            const paperItem = document.createElement('tp-yt-paper-item');
+            paperItem.setAttribute('class', 'style-scope ytd-menu-service-item-renderer');
+            paperItem.setAttribute('role', 'option');
+            paperItem.setAttribute('tabindex', '0');
+            paperItem.setAttribute('aria-disabled', 'false');
 
-            var icon = renderer.getElementsByTagName("yt-icon")[0];
+            const ytIcon = document.createElement('yt-icon');
+            ytIcon.setAttribute('class', 'style-scope ytd-menu-service-item-renderer');
 
-            var svg = document.createElementNS('http://www.w3.org/2000/svg', "svg");
-            svg.classList.add("style-scope", "yt-icon");
-            svg.setAttribute("viewBox", "0 0 24 24");
-            svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-            svg.setAttribute("focusable", "false");
-            svg.setAttribute("style", "pointer-events: none; display: block; width: 100%; height: 100%;");
+            const spanIconShape = document.createElement('span');
+            spanIconShape.setAttribute('class', 'yt-icon-shape yt-spec-icon-shape');
 
-            var g = document.createElementNS('http://www.w3.org/2000/svg', "g");
-            g.classList.add("style-scope", "yt-icon");
+            const divIcon = document.createElement('div');
+            divIcon.setAttribute('style', 'width: 100%; height: 100%; display: block; fill: currentcolor;');
+
+            const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svgIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            svgIcon.setAttribute('enable-background', 'new 0 0 24 24');
+            svgIcon.setAttribute('height', '24');
+            svgIcon.setAttribute('viewBox', '0 0 24 24');
+            svgIcon.setAttribute('width', '24');
+            svgIcon.setAttribute('focusable', 'false');
+            svgIcon.setAttribute('aria-hidden', 'true');
+            svgIcon.setAttribute('style', 'pointer-events: none; display: inherit; width: 100%; height: 100%;');
 
             var paths: SVGPathElement[] = [];
             pathStrings.forEach(pathString => {
@@ -184,26 +203,44 @@ namespace YouTube {
                 paths.push(path);
             });
 
-            var string = renderer.getElementsByTagName("yt-formatted-string")[0];
-            string.removeAttribute("is-empty");
-            string.innerHTML = text;
+            const formattedString = document.createElement('yt-formatted-string');
+            formattedString.setAttribute('class', 'style-scope ytd-menu-service-item-renderer');
+            formattedString.textContent = text;
 
-            icon.appendChild(svg);
-            svg.appendChild(g);
-            paths.forEach(path => g.appendChild(path));
+            paperItem.appendChild(ytIcon);
+            paperItem.appendChild(formattedString);
+            renderer.appendChild(paperItem);
+
+            contextMenuEntry.insertAdjacentElement("afterend", renderer);
+
+            var string = renderer.getElementsByTagName("yt-formatted-string")[0];
+            if (string) {
+                string.removeAttribute("is-empty");
+                string.innerHTML = text;
+            }
+
+            paths.forEach(path => svgIcon.appendChild(path));
+            divIcon.appendChild(svgIcon);
+            spanIconShape.appendChild(divIcon);
+            ytIcon.appendChild(spanIconShape);
         }
 
         async function getTitle(): Promise<string> {
+            console.log("YouTubeConnect looking for title...");
 
             //get details div or the playlist element for playlists
             var detailsDiv = lastContextMenuButton.parentElement;
             while (isVideoContainer()) {
                 if (detailsDiv?.parentElement != null)
                     detailsDiv = detailsDiv?.parentElement;
-                else return ""; //details was not found
+                else {
+                    console.error("YouTubeConnect details were not found");
+                    return "";
+                }
             }
 
             var song = (<HTMLElement>detailsDiv?.querySelector('#video-title')).innerText;
+            console.log("YouTubeConnect found title", song);
 
             // var authorElement = <HTMLElement>detailsDiv?.querySelector('#text > a')
             //     ?? <HTMLElement>detailsDiv?.querySelector("#byline")
@@ -222,12 +259,14 @@ namespace YouTube {
     }
 
     async function formatTitle(title: string): Promise<string> {
+        console.log("YouTubeConnect formatting title...");
+
         //apply default format rules
         if (title.includes('('))
-            title = title.slice(0, title.indexOf('('))
+            title = title.slice(0, title.indexOf('('));
 
         if (title.includes('['))
-            title = title.slice(0, title.indexOf('['))
+            title = title.slice(0, title.indexOf('['));
 
         title = title.replace(/\s+/g, ' '); //remove multiple consecutive spaces
         title = title.trim();
@@ -238,11 +277,13 @@ namespace YouTube {
                 chrome.storage.local.get("options", options => {
                     var rules = options["options"].yt_title_format_rules as { target: string; replace: string; }[];
                     rules.forEach((rule) => title = title.replace(rule.target, rule.replace));
+                    console.log("YouTubeConnect formatted title", title);
                     resolve(title);
                 })
             }
-            catch {
-                resolve(title)
+            catch (error) {
+                console.error("YouTubeConnect error while formatting title", error);
+                resolve(title);
             }
         });
     }
