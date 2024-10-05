@@ -69,6 +69,8 @@ namespace YouTube {
         async function createButton(id: string, pathStrings: string[], onClick: ((this: HTMLButtonElement, ev: MouseEvent) => any)) {
             if (document.getElementById(id)) return;
 
+            console.log("YouTubeConnect adding button", id);
+
             var buttonShape = document.createElement("yt-button-shape");
             buttonShape.id = id;
             buttonShape.style.marginLeft = "8px";
