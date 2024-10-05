@@ -42,8 +42,6 @@ namespace YouTube {
     }
 
     function addCustomButtonsVideo(found: Element): void {
-        console.log("YouTubeConnect found element", found);
-
         if (document.getElementById('button-spotify')) return;
 
         createButton("button-spotify", [spotifyLogo], function btSpotify_OnClick() {
