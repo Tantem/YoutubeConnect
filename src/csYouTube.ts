@@ -14,6 +14,12 @@ namespace YouTube {
         if (menu) {
             addCustomButtonsVideo(menu);
         }
+
+        var owner = document.querySelector("div#owner") as HTMLDivElement;
+        if (owner) {
+            owner.style.minWidth = "unset";
+            owner.style.flex = '0 0 auto';
+        }
     }, true);
     document.onmousedown = function (e) {
         if (e.target instanceof Element) {
@@ -42,8 +48,6 @@ namespace YouTube {
     }
 
     function addCustomButtonsVideo(found: Element): void {
-        if (document.getElementById('button-spotify')) return;
-
         createButton("button-spotify", [spotifyLogo], function btSpotify_OnClick() {
             getTitle().then(title => chrome.runtime.sendMessage({
                 type: "btSpotify_OnClick",
@@ -63,11 +67,12 @@ namespace YouTube {
         }
 
         async function createButton(id: string, pathStrings: string[], onClick: ((this: HTMLButtonElement, ev: MouseEvent) => any)) {
+            if (document.getElementById(id)) return;
+
             var buttonShape = document.createElement("yt-button-shape");
             buttonShape.id = id;
             buttonShape.style.marginLeft = "8px";
             buttonShape.style.flex = "none";
-
 
             var button = document.createElement("button");
             button.classList.add(
