@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "node build.js"
+  },
   "dependencies": {
     "@types/chrome": "0.0.277"
   }
