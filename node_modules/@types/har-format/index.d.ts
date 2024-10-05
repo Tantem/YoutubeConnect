@@ -1,9 +1,3 @@
-// Type definitions for non-npm package HAR 1.2
-// Project: https://w3c.github.io/web-performance/specs/HAR/Overview.html
-// Definitions by: Michael Mrowetz <https://github.com/micmro>
-//                 Marcell Toth <https://github.com/marcelltoth>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-
 /**
  * HTTP Archive 1.2
  *
@@ -233,7 +227,7 @@ export interface Page {
     /** _non-standard_  */
     _score_gzip?: number | null | undefined;
     /** _non-standard_  */
-    '_score_keep-alive'?: number | null | undefined;
+    "_score_keep-alive"?: number | null | undefined;
     /** _non-standard_  */
     _score_minify?: number | null | undefined;
     /** _non-standard_  */
@@ -256,6 +250,12 @@ export interface Page {
     _URL?: string | null | undefined;
     /** _non-standard_  */
     _visualComplete?: number | null | undefined;
+    /**
+     * _non-standard_
+     *
+     * See "Custom Fields" under http://www.softwareishard.com/blog/har-12-spec
+     */
+    [customField: `_${string}`]: unknown | null | undefined;
 }
 /**
  * This object describes timings for various events (states) fired during the
@@ -285,6 +285,49 @@ export interface PageTiming {
     /** A comment provided by the user or the application */
     comment?: string | undefined;
     _startRender?: number | null | undefined;
+}
+/**
+ * _non-standard_
+ *
+ * Data for Chunk as provided by e.g. WebPageTest
+ */
+export interface Chunk {
+    bytes: number;
+    ts: number;
+}
+/**
+ * _non-standard_
+ *
+ * This object describes the initiator of a request (the location of the
+ * code that issued the request) and is used to populate the Entry's
+ * non-standard `_initiator` field.
+ */
+export interface Initiator {
+    /**
+     * presumably equivalent to _initiator_type
+     *
+     * values "parser" and "other" have been observed in Chrome's HARs
+     */
+    "type": string;
+    /**
+     * The URL of the code file in which the code that issued the
+     * request represented by the Entry (this object's parent) resides.
+     * This would otherwise be the string in the Entry's `_initiator` field.
+     */
+    "url"?: string | null | undefined;
+    /**
+     * The line number of the code that issued the request represented
+     * by the Entry to which this Initiator object has been attached.
+     */
+    "lineNumber"?: number | null | undefined;
+    /**
+     * The column number of the code that issued the request.
+     */
+    "column"?: number | null | undefined;
+    /**
+     * The detail information that would be in `_initiator_detail`.
+     */
+    "detail"?: string | null | undefined;
 }
 /**
  * This object represents an array with all exported HTTP requests. Sorting
@@ -360,6 +403,8 @@ export interface Entry {
     /** _non-standard_  */
     _certificate_bytes?: number | string | null | undefined;
     /** _non-standard_  */
+    _chunks?: Chunk[] | null | undefined;
+    /** _non-standard_  */
     _client_port?: number | string | null | undefined;
     /** _non-standard_  */
     _connect_end?: number | string | null | undefined;
@@ -386,6 +431,8 @@ export interface Entry {
     /** _non-standard_  */
     _expires?: string | null | undefined;
     /** _non-standard_  */
+    _fromCache?: "memory" | "disk" | null | undefined;
+    /** _non-standard_  */
     _full_url?: string | null | undefined;
     /** _non-standard_  */
     _gzip_save?: number | string | null | undefined;
@@ -408,15 +455,15 @@ export interface Entry {
     /** _non-standard_  */
     _index?: number | null | undefined;
     /** _non-standard_  */
-    _initiator?: string | null | undefined;
+    _initiator?: Initiator | string | null | undefined;
     /** _non-standard_  */
-    _initiator_column?: string | null | undefined;
+    _initiator_column?: number | null | undefined;
     /** _non-standard_  */
     _initiator_detail?: string | null | undefined;
     /** _non-standard_  */
     _initiator_function?: string | null | undefined;
     /** _non-standard_  */
-    _initiator_line?: string | null | undefined;
+    _initiator_line?: number | null | undefined;
     /** _non-standard_  */
     _initiator_type?: string | null | undefined;
     /** _non-standard_  */
@@ -450,6 +497,33 @@ export interface Entry {
     /** _non-standard_  */
     _request_id?: number | string | null | undefined;
     /** _non-standard_  */
+    _resourceType?:
+        | "document"
+        | "stylesheet"
+        | "image"
+        | "media"
+        | "font"
+        | "script"
+        | "texttrack"
+        | "xhr"
+        | "fetch"
+        | "prefetch"
+        | "eventsource"
+        | "websocket"
+        | "webtransport"
+        | "wasm"
+        | "manifest"
+        | "signed-exchange"
+        | "ping"
+        | "csp-violation-report"
+        | "other"
+        | "preflight"
+        | "sm-script"
+        | "sm-stylesheet"
+        | "webbundle"
+        | null
+        | undefined;
+    /** _non-standard_  */
     _responseCode?: number | string | null | undefined;
     /** _non-standard_  */
     _score_cache?: number | string | null | undefined;
@@ -466,7 +540,7 @@ export interface Entry {
     /** _non-standard_  */
     _score_gzip?: number | string | null | undefined;
     /** _non-standard_  */
-    '_score_keep-alive'?: number | string | null | undefined;
+    "_score_keep-alive"?: number | string | null | undefined;
     /** _non-standard_  */
     _score_minify?: number | string | null | undefined;
     /** _non-standard_  */
@@ -501,6 +575,22 @@ export interface Entry {
     _renderBlocking?: string | null | undefined;
     /** _non-standard_  */
     _isLCP?: boolean | null | undefined;
+    /** _non-standard_  */
+    _webSocketMessages?:
+        | Array<{
+            type: "send" | "receive";
+            time: number;
+            opcode: number;
+            data: string;
+        }>
+        | null
+        | undefined;
+    /**
+     * _non-standard_
+     *
+     * See "Custom Fields" under http://www.softwareishard.com/blog/har-12-spec
+     */
+    [customField: `_${string}`]: unknown | null | undefined;
 }
 /**
  * This object contains detailed info about performed request.
