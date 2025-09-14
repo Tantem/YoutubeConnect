@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "YouTubeConnect",
     "description": "A YouTube extension to make your life easier!",
-    "version": "2.4",
+    "version": "2.5",
     "action": {
         "default_icon": {
             "19": "img/logo.png",
