@@ -4,7 +4,7 @@ namespace Spotify {
 
     function startObserver(): void {
         var observer = new MutationObserver(function (mutations, me) {
-            var found = document.querySelector("footer > div :last-child > div > button:first-of-type");
+            var found = document.querySelector("#global-nav-bar");
             if (found) {
                 addCustomButtons(found);
                 me.disconnect(); // stop observing
@@ -21,10 +21,19 @@ namespace Spotify {
 
     function addCustomButtons(found: Element): void {
         console.log("YouTubeConnect found element", found);
-        
+
+        const target = found.querySelector("#global-nav-bar > div");
+        console.log("YouTubeConnect targeting element for insert", target)
+
+        const logoNative = found.querySelector<HTMLAnchorElement>("#global-nav-bar > div > a");
+        console.log("YouTubeConnect found native logo", logoNative)
+
+        if (logoNative)
+            logoNative.style.marginRight = "0px"
+
         var imgGenius = document.createElement('img');
         imgGenius.src = chrome.runtime.getURL('img/genius_logo_transparent.svg');
-        imgGenius.height = 24;
+        imgGenius.height = 32;
         imgGenius.width = imgGenius.height;
         imgGenius.style.cursor = "pointer";
 
@@ -59,9 +68,9 @@ namespace Spotify {
         imgWrapperYouTube.style.justifyContent = "center";
 
         imgWrapperYouTube.appendChild(imgYouTube);
-        
-        found.insertAdjacentElement('afterend', imgWrapperGenius);
-        found.insertAdjacentElement('afterend', imgWrapperYouTube);
+
+        target?.insertAdjacentElement('beforeend', imgWrapperGenius);
+        target?.insertAdjacentElement('beforeend', imgWrapperYouTube);
 
         imgGenius.addEventListener('click', function () {
             chrome.runtime.sendMessage(
