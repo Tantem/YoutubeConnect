@@ -10,8 +10,10 @@ namespace YouTube {
 
     let lastContextMenuButton: HTMLElement;
     document.addEventListener('mousemove', () => {
-        var menu = document.querySelector('#actions-inner > div#menu > ytd-menu-renderer')
+        var menu = document.querySelector('#middle-row') as HTMLDivElement;
         if (menu) {
+            menu.style.display = "flex";
+            menu.style.flexDirection = "row-reverse";
             addCustomButtonsVideo(menu);
         }
 
