@@ -32,22 +32,6 @@ namespace YouTube {
             }
         }
     };
-    startObserver();
-
-    function startObserver(): void {
-        var dropdownObserver = new MutationObserver(function () {
-            if (!document.querySelector('#itemSpotify')) {
-                var contextMenuEntry = document.querySelector('#items > ytd-menu-service-item-renderer:last-child');
-                if (contextMenuEntry) addCustomButtonsDropdown(contextMenuEntry);
-                // dropdownObserver.disconnect();
-            }
-        });
-        console.log("YouTubeConnect start observing...");
-        dropdownObserver.observe(document, {
-            childList: true,
-            subtree: true
-        });
-    }
 
     function addCustomButtonsVideo(found: Element): void {
         createButton("button-spotify", [spotifyLogo], function btSpotify_OnClick() {
@@ -56,6 +40,7 @@ namespace YouTube {
                 title: title
             }));
         });
+        
         createButton("button-genius", geniusLogo, function btGenius_OnClick() {
             getTitle().then(title => chrome.runtime.sendMessage({
                 type: "btGenius_OnClick",
@@ -71,197 +56,93 @@ namespace YouTube {
         async function createButton(id: string, pathStrings: string[], onClick: ((this: HTMLButtonElement, ev: MouseEvent) => any)) {
             if (document.getElementById(id)) return;
 
-            console.log("YouTubeConnect adding button", id);
+            console.log("YouTubeConnect adding button (clone-based)", id);
 
-            var buttonShape = document.createElement("yt-button-shape");
-            buttonShape.id = id;
-            buttonShape.style.marginLeft = "8px";
-            buttonShape.style.flex = "none";
-
-            var button = document.createElement("button");
-            button.classList.add(
-                "yt-spec-button-shape-next",
-                "yt-spec-button-shape-next--tonal",
-                "yt-spec-button-shape-next--mono",
-                "yt-spec-button-shape-next--size-m",
-                "yt-spec-button-shape-next--icon-button"
-            );
-            button.addEventListener("click", onClick);
-            var spec = document.createElement("div");
-            spec.classList.add("yt-spec-button-shape-next__icon");
-
-            var icon = document.createElement("yt-icon");
-            icon.style.height = "24px";
-            icon.style.width = "24px";
-
-            var svg = document.createElementNS('http://www.w3.org/2000/svg', "svg");
-            svg.classList.add("style-scope", "yt-icon");
-            svg.setAttribute("viewBox", "0 0 24 24");
-            svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-            svg.setAttribute("focusable", "false");
-            svg.setAttribute("style", "pointer-events: none; display: block; width: 100%; height: 100%;");
-
-            var g = document.createElementNS('http://www.w3.org/2000/svg', "g");
-            g.classList.add("style-scope", "yt-icon");
-
-            var paths: SVGPathElement[] = [];
-            pathStrings.forEach(pathString => {
-                var path = document.createElementNS('http://www.w3.org/2000/svg', "path");
-                path.setAttributeNS(null, "d", pathString);
-                path.classList.add("style-scope", "yt-icon");
-                paths.push(path);
-            });
-
-            var touch = document.createElement("yt-touch-feedback-shape");
-            touch.style.borderRadius = "inherit";
-
-            var response = document.createElement("div");
-            response.classList.add("yt-spec-touch-feedback-shape", "yt-spec-touch-feedback-shape--touch-response");
-
-            var stroke = document.createElement("div");
-            stroke.classList.add("yt-spec-touch-feedback-shape__stroke");
-
-            var fill = document.createElement("div");
-            fill.classList.add("yt-spec-touch-feedback-shape__fill");
-
-            found.appendChild(buttonShape);
-            buttonShape.appendChild(button);
-            button.appendChild(spec);
-            button.appendChild(touch);
-            spec.appendChild(icon);
-            icon.appendChild(svg);
-            svg.appendChild(g);
-            paths.forEach(path => g.appendChild(path));
-            touch.appendChild(response);
-            response.appendChild(stroke);
-            response.appendChild(fill);
-        }
-    }
-
-    (window as any).addCustomButtonsDropdown = addCustomButtonsDropdown;
-    function addCustomButtonsDropdown(contextMenuEntry: Element): void {
-        console.log("YouTubeConnect found dropdown", contextMenuEntry);
-
-        contextMenuEntry.setAttribute("has-separator", "");
-
-        createItem("itemGenius", "Find on Genius", geniusLogo, function btSpotify_OnClick() {
-            getTitle().then(title =>
-                chrome.runtime.sendMessage(
-                    {
-                        type: "btGenius_OnClick",
-                        title: title
-                    }
-                ));
-        });
-
-        createItem("itemSpotify", "Find on Spotify", [spotifyLogo], function btGenius_OnClick() {
-            getTitle().then(title =>
-                chrome.runtime.sendMessage(
-                    {
-                        type: "btSpotify_OnClick",
-                        title: title
-                    }
-                ));
-        });
-
-        function createItem(id: string, text: string, pathStrings: string[], onClick: (this: HTMLElement, ev: MouseEvent) => any) {
-            console.log("YouTubeConnect adding item", id, text);
-
-            const renderer = document.createElement('ytd-menu-service-item-renderer');
-            renderer.id = id;
-            renderer.setAttribute('class', 'style-scope ytd-menu-popup-renderer');
-            renderer.setAttribute('system-icons', '');
-            renderer.setAttribute('role', 'menuitem');
-            renderer.setAttribute('use-icons', '');
-            renderer.setAttribute('tabindex', '-1');
-            renderer.setAttribute('aria-selected', 'false');
-            renderer.addEventListener("click", onClick);
-
-            const paperItem = document.createElement('tp-yt-paper-item');
-            paperItem.setAttribute('class', 'style-scope ytd-menu-service-item-renderer');
-            paperItem.setAttribute('role', 'option');
-            paperItem.setAttribute('tabindex', '0');
-            paperItem.setAttribute('aria-disabled', 'false');
-
-            const ytIcon = document.createElement('yt-icon');
-            ytIcon.setAttribute('class', 'style-scope ytd-menu-service-item-renderer');
-
-            const spanIconShape = document.createElement('span');
-            spanIconShape.setAttribute('class', 'yt-icon-shape yt-spec-icon-shape');
-
-            const divIcon = document.createElement('div');
-            divIcon.setAttribute('style', 'width: 100%; height: 100%; display: block; fill: currentcolor;');
-
-            const svgIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svgIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            svgIcon.setAttribute('enable-background', 'new 0 0 24 24');
-            svgIcon.setAttribute('height', '24');
-            svgIcon.setAttribute('viewBox', '0 0 24 24');
-            svgIcon.setAttribute('width', '24');
-            svgIcon.setAttribute('focusable', 'false');
-            svgIcon.setAttribute('aria-hidden', 'true');
-            svgIcon.setAttribute('style', 'pointer-events: none; display: inherit; width: 100%; height: 100%;');
-
-            var paths: SVGPathElement[] = [];
-            pathStrings.forEach(pathString => {
-                var path = document.createElementNS('http://www.w3.org/2000/svg', "path");
-                path.setAttributeNS(null, "d", pathString);
-                path.classList.add("style-scope", "yt-icon");
-                paths.push(path);
-            });
-
-            const formattedString = document.createElement('yt-formatted-string');
-            formattedString.setAttribute('class', 'style-scope ytd-menu-service-item-renderer');
-            formattedString.textContent = text;
-
-            paperItem.appendChild(ytIcon);
-            paperItem.appendChild(formattedString);
-            renderer.appendChild(paperItem);
-
-            contextMenuEntry.insertAdjacentElement("afterend", renderer);
-
-            var string = renderer.getElementsByTagName("yt-formatted-string")[0];
-            if (string) {
-                string.removeAttribute("is-empty");
-                string.innerHTML = text;
+            // Strict: require a `yt-button-view-model` to clone (no fallback to other hosts)
+            let template: HTMLElement | null = null;
+            const allAriaButtons = Array.from(document.querySelectorAll('button[aria-label]')) as HTMLButtonElement[];
+            const shareBtn = allAriaButtons.find(b => (b.getAttribute('aria-label') || '').toLowerCase().includes('share'));
+            if (shareBtn) template = shareBtn.closest('yt-button-view-model') as HTMLElement | null;
+            if (!template) template = document.querySelector('yt-button-view-model') as HTMLElement | null;
+            if (!template) {
+                console.warn('YouTubeConnect: no yt-button-view-model template found; aborting', id);
+                return;
             }
 
-            paths.forEach(path => svgIcon.appendChild(path));
-            divIcon.appendChild(svgIcon);
-            spanIconShape.appendChild(divIcon);
-            ytIcon.appendChild(spanIconShape);
-        }
+            const clone = template.cloneNode(true) as HTMLElement;
+            clone.id = id;
 
-        async function getTitle(): Promise<string> {
-            console.log("YouTubeConnect looking for title...");
+            // Attach click handler to the actual <button> inside the cloned node
+            const buttonEl = clone.querySelector('button') as HTMLButtonElement | null;
+            if (buttonEl) {
+                buttonEl.setAttribute('aria-label', id);
+                buttonEl.addEventListener('click', onClick);
+            } else {
+                // fallback: attach to root clone
+                clone.addEventListener('click', onClick as any);
+            }
+            // Remove the cloned label (it will often say "Share") so we show icon-only
+            const textEl = clone.querySelector('[class*="ButtonTextContent"], [class*="button-text"], .ytSpecButtonShapeNextButtonTextContent, yt-formatted-string');
+            if (textEl instanceof HTMLElement) {
+                textEl.textContent = '';
+            }
 
-            //get details div or the playlist element for playlists
-            var detailsDiv = lastContextMenuButton.parentElement;
-            while (isVideoContainer()) {
-                if (detailsDiv?.parentElement != null)
-                    detailsDiv = detailsDiv?.parentElement;
-                else {
-                    console.error("YouTubeConnect details were not found");
-                    return "";
+            // Remove icon-container classes that add margin for a text label (we don't have one)
+            const iconContainers = clone.querySelectorAll('[class*="SpecButtonShapeNextIcon"], [class*="spec-button-shape-next__icon"]');
+            iconContainers.forEach((ic) => {
+                if (ic instanceof HTMLElement) {
+                    ic.style.margin = '0';
+                    ic.style.marginLeft = '0';
+                    ic.classList.remove('ytSpecButtonShapeNextIcon');
+                    ic.classList.remove('ytSpecButtonShapeNext__icon');
+                    ic.classList.remove('yt-spec-button-shape-next__icon');
+                }
+            });
+
+            // Replace or create svg icon inside the clone so the icon renders
+            let svg = clone.querySelector('svg') as SVGElement | null;
+            if (!svg) {
+                // try to find an icon wrapper to insert the svg into
+                const wrapper = clone.querySelector('.ytIconWrapperHost, .yt-icon-shape, [class*="icon"]') as HTMLElement | null;
+                if (wrapper) {
+                    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg') as SVGElement;
+                    wrapper.appendChild(svg as any);
                 }
             }
 
-            var song = (<HTMLElement>detailsDiv?.querySelector('#video-title')).innerText;
-            console.log("YouTubeConnect found title", song);
+            if (svg) {
+                // remove existing children
+                while (svg.firstChild) svg.removeChild(svg.firstChild);
+                // ensure proper svg attributes used by YouTube
+                svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('width', '24');
+                svg.setAttribute('height', '24');
+                svg.setAttribute('focusable', 'false');
+                svg.setAttribute('aria-hidden', 'true');
+                svg.setAttribute('style', 'pointer-events: none; display: inherit; width: 100%; height: 100%;');
 
-            // var authorElement = <HTMLElement>detailsDiv?.querySelector('#text > a')
-            //     ?? <HTMLElement>detailsDiv?.querySelector("#byline")
-            //     ?? <HTMLElement>detailsDiv?.querySelector("yt-formatted-string > #text");
-            // var author = authorElement?.innerText;
-            // var title = `${author} ${song}`;
-            return await formatTitle(song);
-
-            function isVideoContainer() {
-                return detailsDiv?.id != 'details'
-                    && detailsDiv?.nodeName != 'YTD-PLAYLIST-VIDEO-RENDERER'
-                    && detailsDiv?.nodeName != 'YTD-PLAYLIST-PANEL-VIDEO-RENDERER'
-                    && detailsDiv?.nodeName != 'YTD-COMPACT-VIDEO-RENDERER';
+                const ns = 'http://www.w3.org/2000/svg';
+                pathStrings.forEach(pathString => {
+                    const path = document.createElementNS(ns, 'path');
+                    path.setAttribute('d', pathString);
+                    path.setAttribute('fill', 'currentColor');
+                    path.classList.add('style-scope', 'yt-icon');
+                    svg.appendChild(path);
+                });
+            } else {
+                console.warn('YouTubeConnect: svg icon not found and no wrapper to insert into for', id);
             }
+
+            // Mark this clone so future insertions can detect action buttons
+            const existingActionClones = found.querySelectorAll('[data-yc-action]');
+            // If there are already action clones, add a margin to separate them
+            if (existingActionClones.length > 0) {
+                (clone as HTMLElement).style.marginRight = '8px';
+            }
+            (clone as HTMLElement).setAttribute('data-yc-action', '1');
+            // Insert clone into container
+            found.appendChild(clone);
         }
     }
 
