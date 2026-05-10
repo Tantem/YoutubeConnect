@@ -128,7 +128,7 @@ namespace YouTube {
                     path.setAttribute('d', pathString);
                     path.setAttribute('fill', 'currentColor');
                     path.classList.add('style-scope', 'yt-icon');
-                    svg.appendChild(path);
+                    svg!.appendChild(path);
                 });
             } else {
                 console.warn('YouTubeConnect: svg icon not found and no wrapper to insert into for', id);
